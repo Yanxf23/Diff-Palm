@@ -113,6 +113,8 @@ cython_debug/
 # Others
 *.swp
 *~
+*.pt
+output/
 
 # MacOS
 .DS_Store
