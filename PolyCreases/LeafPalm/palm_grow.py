@@ -5,7 +5,6 @@ from functools import partial
 
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 from shapely import unary_union
 from shapely.geometry import Polygon
 from LeafPalm.method import *

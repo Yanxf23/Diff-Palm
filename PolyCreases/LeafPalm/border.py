@@ -1,8 +1,4 @@
-import random
 import numpy as np
-from matplotlib import pyplot as plt
-from shapely import Polygon
-
 
 class border:
     def __init__(self, param, lower_bound, upper_bound):
@@ -51,41 +47,3 @@ class border:
             border[-i - 1] = point_set[2 * i + 1]
             i = i + 1
         return border
-
-
-if __name__ == '__main__':
-    border_creater_1 = border(
-        [-2.309277599186426, -3.9903253136852856, -2.3730508002504127, -2.4450928187126286, -0.8991630453268774],
-        -0.92708023, 0.5134968)
-    border_1 = border_creater_1.border_define()
-    border_1 = [((x / 2.0) + 0.5, (y / 2.0) + 0.5) for x, y in border_1]
-
-    p = Polygon(border_1)
-    x, y = zip(*p.exterior.coords)
-    plt.plot(x, y, label='area', color='blue')
-    x, y = zip(*border_1)
-    plt.scatter(x, y, c='blue')
-
-    border_creater_2 = border(
-        [0.19041597686984477, 0.18299145114394438, -0.28130344560471743, -0.42697657441020814, 0.14577144669409092],
-        -1.0283488, 0.45339728)
-    border_2 = border_creater_2.border_define()
-    border_2 = [((x / 2.0) + 0.5, (y / 2.0) + 0.5) for x, y in border_2]
-    p = Polygon(border_2)
-    x, y = zip(*p.exterior.coords)
-    plt.plot(x, y, label='area', color='blue')
-    x, y = zip(*border_2)
-    plt.scatter(x, y, c='blue')
-
-    border_creater_3 = border(
-        [-0.20206152840245054, 0.017435304668667377, 0.516291273609968, -0.5630598715774259, 0.4606384049791271],
-        -0.30461669, 0.88865701)
-    border_3 = border_creater_3.border_define()
-    border_3 = [((x / 2.0) + 0.5, (y / 2.0) + 0.5) for x, y in border_3]
-    p = Polygon(border_3)
-    x, y = zip(*p.exterior.coords)
-    plt.plot(x, y, label='area', color='blue')
-    x, y = zip(*border_3)
-    plt.scatter(x, y, c='blue')
-    plt.axis('equal')
-    plt.show()

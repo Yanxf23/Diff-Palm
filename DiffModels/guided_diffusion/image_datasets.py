@@ -287,22 +287,11 @@ class PalmImageDataset(Dataset):
             arr_label = center_crop_arr(pil_label, self.resolution)
 
         if self.random_flip:
-            # if random.random() < 0.5:
-            #     arr = arr[::-1, :]
-            #     arr_label = arr_label[::-1, :]
-            
             if random.random() < 0.5:
                 arr = arr[:, ::-1]
                 arr_label = arr_label[:, ::-1]
         
-            # if random.random() < 0.5:
-            #     angle = np.random.randint(1, 4)
-            #     arr = np.rot90(arr, angle)
-            #     arr_label = np.rot90(arr_label, angle)
-
         arr = arr.astype(np.float32) / 127.5 - 1
-        # scale = np.random.uniform(0.80, 1.0)
-        # arr = arr * scale
 
         arr_label = arr_label.astype(np.float32) / 127.5 - 1
 
@@ -310,7 +299,6 @@ class PalmImageDataset(Dataset):
         if self.local_classes is not None:
             out_dict["y"] = np.array(self.local_classes[idx], dtype=np.int64)
 
-        # print(arr_label.shape)
         out_dict["low_res"] = np.transpose(arr_label[:, :, None], [2, 0, 1])
         return np.transpose(arr, [2, 0, 1]), out_dict
 

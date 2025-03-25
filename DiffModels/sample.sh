@@ -1,19 +1,15 @@
 set -ex
 
 GPUS="0"
-
 BATCH=8
 K_STEP=500
 
-# saving directory
 CHK_DIR=./output/test-large
 export OPENAI_LOGDIR=$CHK_DIR
 
 if [ ! -d "$CHK_DIR" ]; then
     mkdir -p "$CHK_DIR"
 fi
-
-THIS_DIR=t-scripts/test-large
 
 INDIR=datasets/test-2000
 NPZ="${CHK_DIR}/data.npz"
@@ -22,7 +18,7 @@ NUM=40000
 SAMPLES=40000
 SAME_NUM=20 
 
-python3 ${THIS_DIR}/save_npz.py \
+python3 scripts/save_npz.py \
     --input $INDIR \
     --outdir $OUTDIR1 \
     --outnpz $NPZ \
@@ -47,6 +43,6 @@ CUDA_VISIBLE_DEVICES=${GPUS}  python3 ./palm_sample_intra.py \
     --base_samples $DATA_PATH \
     $SAMPLE_FLAGS $DIFFUSION_FLAGS $MODEL_FLAGS $INTRA_FLAGS
 
-python3 ${THIS_DIR}/load_npz.py \
+python3 scripts/load_npz.py \
     --input "${CHK_DIR}/samples_${SAMPLES}x128x128x3.npz" \
     --outdir "${CHK_DIR}/results"

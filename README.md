@@ -1,124 +1,98 @@
-<div align="left">
-<h2> Official implementation of Diff-Palm(CVPR 2025)</h2>
-
-<div>
-    <h4 align="left">
-        <a href="http://arxiv.org/abs/2503.18312" target='_blank'>
-        <img src="https://img.shields.io/badge/arXiv-2503.18312-b31b1b.svg">
-        </a>
-        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Ukuer/Diff-Palm">
-    </h4>
-</div>
-
----
-<!-- 
 <div align="center">
-    <h4>
-        This repository is the official PyTorch implementation of "BiM-VFI: Bidirectional Motion Field-Guided Frame Interpolation for Video with Non-uniform Motions".
-    </h4>
+
+# Official implementation of "Diff-Palm: Realistic Palmprint Generation with Polynomial Creases and Intra-Class Variation Controllable Diffusion Models" [CVPR2025]
+
+<a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
+<a href="http://arxiv.org/abs/2503.18312" target='_blank'><img src="https://img.shields.io/badge/arXiv-2503.18312-b31b1b.svg"></a>
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/Ukuer/Diff-Palm">
+    
+
 </div>
-</div>
 
-[//]: # (## 📧 News)
+This repository is the official PyTorch implementation of the CVPR paper "Diff-Palm: Realistic Palmprint Generation with Polynomial Creases and Intra-Class Variation Controllable Diffusion Models".
 
-[//]: # (- **Apr 19, 2024:** Codes of FMA-Net &#40;including the training, testing code, and pretrained model&#41; are released :fire:)
-
-[//]: # (- **Apr 05, 2024:** FMA-Net is selected for an ORAL presentation at CVPR 2024 &#40;0.78% of 11,532 valid submissions&#41;)
-
-[//]: # (- **Feb 27, 2024:** FMA-Net accepted to CVPR 2024 :tada:)
-
-[//]: # (- **Jan 14, 2024:** This repository is created)
-
-[//]: # ()
-[//]: # (## 📝 TODO)
-
-[//]: # (- [x] Release FMA-Net code)
-
-[//]: # (- [x] Release pretrained FMA-Net model)
-
-[//]: # (- [x] Add data preprocessing scripts)
+## Abstract
+Palmprint recognition is significantly limited by the lack of large-scale publicly available datasets. 
+Previous methods have adopted B\'ezier curves to simulate the palm creases, which then serve as input for conditional GANs to generate realistic palmprints.
+However, without employing real data fine-tuning, the performance of the recognition model trained on these synthetic datasets would drastically decline, indicating a large gap between generated and real palmprints.
+This is primarily due to the utilization of an inaccurate palm crease representation and challenges in balancing intra-class variation with identity consistency.
+To address this, we introduce a polynomial-based palm crease representation that provides a new palm crease generation mechanism more closely aligned with the real distribution. 
+We also propose the palm creases conditioned diffusion model with a novel intra-class variation control method.
+By applying our proposed $K$-step noise-sharing sampling, we are able to synthesize palmprint datasets with large intra-class variation and high identity consistency.
+Experimental results show that, for the first time, recognition models trained solely on our synthetic datasets, without any fine-tuning, outperform those trained on real datasets.
+Furthermore, our approach achieves superior recognition performance as the number of generated identities increases.
 
 
+## Getting Started
 
-
-## Contents
-- [Contents](#contents)
-- [Environment Setting](#environment-setting)
-- [Dataset](#dataset)
-  - [Download](#download)
-  - [Preparation](#preparation)
-- [Pretrained Model](#pretrained-model)
-- [Evaluation](#evaluation)
-- [Training](#training)
-- [Demo](#demo)
-- [License](#license)
-
-## Environment Setting
-To run this project, you need to set up your environment as follows:
+### Clone this repository
+Clone our repo to your local machine using the following command:
 ```bash
-conda create -n bimvfi python=3.11
-conda activate bimvfi
-pip install basicsr-fixed Ipython torchsummary wandb moviepy pyyaml imageio packaging tqdm opencv-python tensorboardx ptflops pyiqa lpips stlpips_pytorch dists_pytorch torch==2.4.1 torchvision==0.19.1
-conda install cupy -c conda-forge
+git clone https://github.com/Ukuer/Diff-Palm.git
+cd Diff-Palm
 ```
-## Dataset
-### Download
-You can download the datasets used for training and testing from following links:
-> - [Vimeo90K](https://cove.thecvf.com/datasets/875)
-> - [SNU-FILM](https://myungsub.github.io/CAIN/)
-> - [SNU-FILM-arb](https://drive.google.com/drive/folders/1Kp1JLP9CCSDG-dhj2jZ-nuB0_plXnzSt?usp=drive_link)
-> - [X4K1000FPS](https://www.dropbox.com/scl/fo/88aarlg0v72dm8kvvwppe/AHxNqDye4_VMfqACzZNy5rU?rlkey=a2hgw60sv5prq3uaep2metxcn&e=1&dl=0)
 
-### Prepare
-For SNU-FILM and SNU-FILM-arb datasets, move `test-[easy, medium, hard, extreme].txt` and `test-arb-[medium, hard, extreme].txt` to `<PATH_TO_SNU_FILM>/eval_modes` directory.
+### Prerequisites
+- The dependent packages are listed in `requirements.txt` file.
+- Note that this diffusion model is based on [guided-diffusion](https://github.com/openai/guided-diffusion).
+If you have any environment problems, you may find solutions in [guided-diffusion](https://github.com/openai/guided-diffusion) and its parent repo [improved-diffusion](https://github.com/openai/improved-diffusion).
 
-## Pretrained Model
-Pre-trained model can be downloaded from [here](https://drive.google.com/file/d/18Wre7XyRtu_wtFRzcsit6oNfHiFRt9vC/view?usp=sharing).
-
-## Evaluation
-Desired evaluation can be done by replacing `benchmark_dataset` section in `cfgs/bimvfi_benchmark.yaml`.
-* `name`: Name of benchmark datasets. The datasets that can be benchmarked are [_vimeo_, _vimeo\_septuplet_, _snu\_film_, _snu\_film\_arb_, _xtest_].
-* `args`:
-  * `root_path`: Path of each dataset.
-  * `split`: Desired splits to evaluate. [_test_, _val_] for _vimeo_ and _vimeo\_septuplet_, [(_easy_), _medium_, _hard_, _extreme_] for _snu\_film_ and _snu\_film\_arb_, and [_single_, _multiple_] for _xtest_.
-  * `pyr_lvl`: 3 for vimeo, 5 for snu_film, and 7 for xtest.
-* `save_imgs`: `True` if you want to save interpolation results, else `False`. It takes much more time to save images.
-
-Then, run below:
-```bash
-python main.py --cfg cfgs/bim_vfi_benchmark.yaml
-```
 
 ## Training
-For single GPU training,
-```bash
-python main.py --cfg cfgs/bim_vfi.yaml
-```
+The palm creases conditioned diffusion model are placed in `DiffModels`. To train this model, please refer to the following steps:
+- prepare the palmprint ROI images.
+- extract the palm crease images using [PCEM](https://github.com/Ukuer/PCE-Palm/blob/main/PCEM_numpy.py).
+- place paired palmprint and palm crease directory in `palm` and `label` sub-directory respectively, as follows :
+  ```
+  DATASETS/
+  ├── palm/
+  │   ├── 1.png
+  │   ├── 2.png
+  │   └── ...
+  └── label/
+      ├── 1.png
+      ├── 2.png
+      └── ...
+  ```
+- modify the `run.sh` to meet your requirements.
+- `bash run.sh` to start training. You need to kill the process manually to finish the training.
+- ---
+- Additionally, we have found that training with plain palmprint images would easily result in synthesizd images with color shift. A small discussion about this problem is in [issues](https://github.com/openai/guided-diffusion/issues/81). To avoid this, we opt to apply `scale.py` to scale each palmprint images.
 
-For multiple GPU training with GPU number 0, 1, 2, 3,
-```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node 4 main.py --cfg cfgs/bim_vfi.yaml
-```
-To run with wandb, fill in wandb.yaml and run with
-```bash
-python main.py --cfg cfgs/bim_vfi.yaml -w
-```
+## Inference
+The infernece is two-stage. **First synthsize polynomial creases, then generate palmprints with these creases.**
 
-## Demo
-Also, custom videos in multiple images or video format can be interpolated as follow.
-First, set demo root directory as follow:
-  - video1.mp4 
-  - video2.mp4
-  - video3
-    - img0.png
-    - img1.png
-    - ...
-  - ...
+### Polynomial Creases
+This code is in `PolyCreases`. 
+- run `syn_polypalm_mp.py` to synthesize polynomial crease images. 
+- Note that each synthesized image is regarded as an identity.  
 
-Then, replace root_path in `cfgs/bim_vfi_demo.yaml` to desired data root, and run 
-```bash
-python main.py --cfg cfgs/bim_vfi_demo.yaml
+### Diffusion Models
+This code is in `DiffModels`.
+- download pretrained weights in [Google drive](https://drive.google.com/file/d/1vQya0fgrSh-PkFsDBi0OM89_rfSiO3u6/view?usp=sharing) or [Baidu drive](https://pan.baidu.com/s/1p6B2TmYfQCdUQdcZRztLVw?pwd=q835).
+- place this pretrained file in `./checkpoint/diffusion-netpalm-scale-128`
+- modify the `sample.sh` to meet your requirements.
+- run `bash sample.sh` to synthsize realistic palmprint datasets.
+
+
+## Evaluation 
+TODO
+
+## Acknowledgement
+
+Our implementation is based on the following works: [PCE-Palm](https://github.com/Ukuer/PCE-Palm), [guided-diffusion](https://github.com/openai/guided-diffusion), [ElasticFace](https://github.com/fdbtrs/ElasticFace).
+
+
+## Citation
+
 ```
-## License
-The source codes including the checkpoint can be freely used for research and education only. Any commercial use should get formal permission from the principal investigator (Prof. Munchurl Kim, mkimee@kaist.ac.kr).
- -->
+@misc{jin2025diffpalm,
+      title={Diff-Palm: Realistic Palmprint Generation with Polynomial Creases and Intra-Class Variation Controllable Diffusion Models}, 
+      author={Jianlong Jin and Chenglong Zhao and Ruixin Zhang and Sheng Shang and Jianqing Xu and Jingyun Zhang and ShaoMing Wang and Yang Zhao and Shouhong Ding and Wei Jia and Yunsheng Wu},
+      year={2025},
+      eprint={2503.18312},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2503.18312}, 
+}
+```
