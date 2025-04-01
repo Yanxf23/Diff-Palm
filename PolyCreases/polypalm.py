@@ -71,11 +71,25 @@ class PolyPalmCreator:
         self.x_axis = np.vstack(x_axis_list)
         self.fdim = self.coeff.shape[-1]
 
+        self.filter_outliers_by_iqr()
         self.process_coeff()
         self.process_axis()
 
     def set_seed(self, seed):
         np.random.seed(seed=seed)
+
+    def filter_outliers_by_iqr(self):
+        results = []
+        for l in range(3):
+            data = self.coeff[:, l]
+            q1 = np.percentile(data, 25, axis=0)  
+            q3 = np.percentile(data, 75, axis=0)  
+            iqr = q3 - q1  
+            lower_bound = q1 - 1.5 * iqr  
+            upper_bound = q3 + 1.5 * iqr  
+            inner = [x for x in data if all(x > lower_bound) and all(x < upper_bound)]
+            results += [np.array(inner)]
+        self.coeff = results
 
     def process_coeff(self):
         self.coeff_mean = np.ones(shape=(3, self.fdim))
@@ -133,8 +147,10 @@ class PolyPalmCreator:
 
 def test():
     fig = PolyPalmCreator(imsize=512)
-    fig.fit('./labeled_data.pkl')
+    filepath = "./labeled_data.pkl"
+    fig.fit(filepath)
 
+    os.makedirs('./coeff_test', exist_ok=True)
     for i in range(0, 200):
         name = f'./coeff_test/{i}.png'
         fig.draw_by_multi(name)
