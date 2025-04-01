@@ -74,6 +74,8 @@ This code is in `DiffModels`.
 - modify the `sample.sh` to meet your requirements.
 - run `bash sample.sh` to synthsize realistic palmprint datasets.
 
+## Datasets
+TODO
 
 ## Evaluation 
 TODO
