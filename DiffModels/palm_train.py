@@ -18,6 +18,10 @@ from guided_diffusion.script_util import (
 )
 from guided_diffusion.train_util import TrainLoop
 
+import sys
+sys.path.append(r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment")
+from cup_dataset import load_palm_cup_data
+
 
 def main():
     args = create_argparser().parse_args()
@@ -33,12 +37,20 @@ def main():
     schedule_sampler = create_named_schedule_sampler(args.schedule_sampler, diffusion)
 
     logger.log("creating data loader...")
-    data = load_palm(
-        args.data_dir,
+    # data = load_palm_data(
+    #     args.data_dir,
+    #     args.batch_size,
+    #     large_size=args.large_size,
+    #     small_size=args.small_size,
+    #     class_cond=args.class_cond,
+    # )
+    data = load_palm_cup(
+        args.raw_dir,
+        args.label_dir,
+        args.data_type,
         args.batch_size,
-        large_size=args.large_size,
-        small_size=args.small_size,
-        class_cond=args.class_cond,
+        args.large_size,
+        args.include_key,
     )
 
     logger.log("training...")
@@ -71,6 +83,23 @@ def load_palm(data_dir, batch_size, large_size, small_size, class_cond=False):
     for large_batch, model_kwargs in data:
         yield large_batch, model_kwargs
 
+def load_palm_cup(raw_dir, label_dir, data_type, batch_size, large_size, include_key):
+    data = load_palm_cup_data(
+        raw_dir,
+        label_dir,
+        data_type,
+        batch_size,
+        image_size=large_size,
+        remove_json=r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment\remove.json",
+        deterministic=False,
+        random_crop=False,
+        random_flip=True,
+        include_key=include_key,
+        save_debug_dir=r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment",
+    )
+
+    for large_batch, model_kwargs in data:
+        yield large_batch, model_kwargs
 
 def diffusion_defaults():
     """
@@ -128,7 +157,11 @@ def palm_model_and_diffusion_defaults():
 
 def create_argparser():
     defaults = dict(
-        data_dir="",
+        # data_dir="",
+        raw_dir="",
+        label_dir="",
+        data_type="",
+        include_key="",
         schedule_sampler="uniform",
         lr=1e-4,
         weight_decay=0.0,

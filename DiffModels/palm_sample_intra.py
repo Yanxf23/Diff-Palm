@@ -101,8 +101,12 @@ def main():
         sample = sample.contiguous()
 
         all_samples = [th.zeros_like(sample) for _ in range(dist.get_world_size())]
-        dist.all_gather(all_samples, sample)  # gather not supported with NCCL
-        for sample in all_samples:
+        if dist.is_initialized() and dist.get_world_size() > 1:
+            all_samples = [th.zeros_like(sample) for _ in range(dist.get_world_size())]
+            dist.all_gather(all_samples, sample)
+            for s in all_samples:
+                all_images.append(s.cpu().numpy())
+        else:
             all_images.append(sample.cpu().numpy())
         logger.log(f"created {len(all_images) * args.batch_size} samples")
 
@@ -114,7 +118,8 @@ def main():
         logger.log(f"saving to {out_path}")
         np.savez(out_path, arr)
 
-    dist.barrier()
+    if dist.is_initialized() and dist.get_world_size() > 1:
+        dist.barrier()
     logger.log("sampling complete")
 
 
@@ -124,6 +129,9 @@ def load_data_for_worker(base_samples, batch_size, class_cond):
         image_arr = obj["arr_0"]
         if class_cond:
             label_arr = obj["arr_1"]
+    if not dist.is_available() or not dist.is_initialized():
+        dist.get_rank = lambda: 0
+        dist.get_world_size = lambda: 1
     rank = dist.get_rank()
     num_ranks = dist.get_world_size()
     buffer = []

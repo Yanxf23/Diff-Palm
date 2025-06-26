@@ -1,3 +1,5 @@
+*.png
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -61,6 +63,7 @@ celerybeat-schedule
 coverage.xml
 nosetests.xml
 test-output/
+./PolyCreases/test-images
 .junit.xml
 behave-json-report/
 

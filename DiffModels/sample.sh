@@ -14,9 +14,10 @@ fi
 INDIR=datasets/test-2000
 NPZ="${CHK_DIR}/data.npz"
 OUTDIR1="${CHK_DIR}/label"
-NUM=40000
+NUM=200 # 40000
 SAMPLES=40000
 SAME_NUM=20 
+
 
 python3 scripts/save_npz.py \
     --input $INDIR \
