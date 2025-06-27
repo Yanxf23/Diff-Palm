@@ -98,23 +98,43 @@ class CupDataset(Dataset):
                     self.to_remove.add((user, name))
 
         self.image_paths, self.label_paths = self._filter_images(image_paths, label_paths)
+        # self.image_paths = sorted(self.image_paths)
+        # self.label_paths = sorted(self.label_paths)
+        # print(len(self.image_paths), len(self.label_paths))
 
         if self.save_debug_dir:
             os.makedirs(self.save_debug_dir, exist_ok=True)
             print(f"Debug saving directory: {self.save_debug_dir}")
 
     def _filter_images(self, image_paths, label_paths):
+        # Build a lookup dictionary from label paths
+        label_dict = {}
+        for lbl_path in label_paths:
+            lbl_user = os.path.normpath(lbl_path).split(os.sep)[-2]
+            lbl_name = os.path.basename(lbl_path)
+            label_dict[(lbl_user, lbl_name)] = lbl_path
+
         filtered_images = []
         filtered_labels = []
-        for img_path, lbl_path in zip(image_paths, label_paths):
-            user = os.path.normpath(img_path).split(os.sep)[-2]
-            name = os.path.basename(img_path)
-            if (user, name) in self.to_remove:
+
+        for img_path in image_paths:
+            img_user = os.path.normpath(img_path).split(os.sep)[-2]
+            img_name = os.path.basename(img_path)
+
+            if (img_user, img_name) in self.to_remove:
+                # print(f"Skipping {img_path} as it is in the remove list.")
                 continue
             if self.include_key and self.include_key not in img_path:
+                # print(f"Skipping {img_path} as it does not contain the include key '{self.include_key}'.")
                 continue
+            if (img_user, img_name) not in label_dict:
+                print(f"Warning: No matching label for {img_path}")
+                continue
+
             filtered_images.append(img_path)
-            filtered_labels.append(lbl_path)
+            filtered_labels.append(label_dict[(img_user, img_name)])
+        
+        logger.log("len(filtered_images): {}, len(filtered_labels): {}".format(len(filtered_images), len(filtered_labels)))
         return filtered_images, filtered_labels
 
     def __len__(self):
@@ -123,6 +143,14 @@ class CupDataset(Dataset):
     def __getitem__(self, idx):
         img_path = self.image_paths[idx]
         lbl_path = self.label_paths[idx]
+
+        user = os.path.normpath(img_path).split(os.sep)[-2]
+        name = os.path.basename(img_path)
+        user_raw = os.path.normpath(lbl_path).split(os.sep)[-2]
+        name_raw = os.path.basename(lbl_path)
+        if user != user_raw or name != name_raw:
+            print(f"Warning: Mismatched paths for {img_path} and {lbl_path}. Skipping.")
+            sys.exit(0)
 
         with bf.BlobFile(img_path, "rb") as f:
             img = Image.open(f).convert("RGB")
@@ -174,7 +202,7 @@ def load_palm_cup_data(
     include_key=None,
     save_debug_dir=None,
 ):  
-    logger.log("creating data loader...")
+    # logger.log("creating data loader...")
     palm_paths = _list_image_files_recursively(os.path.join(raw_dir, data_type))
     label_paths = _list_image_files_recursively(os.path.join(label_dir, data_type))
     dataset = CupDataset(

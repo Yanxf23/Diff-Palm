@@ -53,7 +53,6 @@ def main():
         args.large_size,
         args.include_key,
     )
-
     logger.log("training...")
     TrainLoop(
         model=model,
@@ -96,8 +95,8 @@ def load_palm_cup(raw_dir, label_dir, data_type, batch_size, large_size, include
         random_crop=False,
         random_flip=True,
         include_key=include_key,
-        # save_debug_dir=r"/home/ubuntu/SDpalm/GenPalm/Diff-Palm/cup_deployment",
-        save_debug_dir=None,  # Set to None to disable saving debug images
+        save_debug_dir=r"/home/ubuntu/SDpalm/GenPalm/Diff-Palm/cup_deployment",
+        # save_debug_dir=None,  # Set to None to disable saving debug images
     )
 
     for large_batch, model_kwargs in data:
