@@ -1,0 +1,91 @@
+Logging to .\checkpoint\cup
+creating model...
+creating data loader...
+training...
+creating data loader...
+-------------------------
+| grad_norm  | 2.25     |
+| loss       | 1.01     |
+| loss_q0    | 1.02     |
+| loss_q1    | 1.01     |
+| loss_q2    | 1.01     |
+| loss_q3    | 1.02     |
+| mse        | 1        |
+| mse_q0     | 1        |
+| mse_q1     | 1        |
+| mse_q2     | 1        |
+| mse_q3     | 1        |
+| param_norm | 127      |
+| samples    | 64       |
+| step       | 0        |
+| vb         | 0.0111   |
+| vb_q0      | 0.0143   |
+| vb_q1      | 0.00743  |
+| vb_q2      | 0.00938  |
+| vb_q3      | 0.0133   |
+-------------------------
+saving model 0...
+saving model 0.9999...
+-------------------------
+| grad_norm  | 2.29     |
+| loss       | 0.917    |
+| loss_q0    | 0.942    |
+| loss_q1    | 0.902    |
+| loss_q2    | 0.914    |
+| loss_q3    | 0.913    |
+| mse        | 0.904    |
+| mse_q0     | 0.913    |
+| mse_q1     | 0.896    |
+| mse_q2     | 0.905    |
+| mse_q3     | 0.901    |
+| param_norm | 127      |
+| samples    | 704      |
+| step       | 10       |
+| vb         | 0.0136   |
+| vb_q0      | 0.0284   |
+| vb_q1      | 0.00664  |
+| vb_q2      | 0.00859  |
+| vb_q3      | 0.0116   |
+-------------------------
+-------------------------
+| grad_norm  | 2.11     |
+| loss       | 0.724    |
+| loss_q0    | 0.775    |
+| loss_q1    | 0.708    |
+| loss_q2    | 0.706    |
+| loss_q3    | 0.706    |
+| mse        | 0.706    |
+| mse_q0     | 0.724    |
+| mse_q1     | 0.702    |
+| mse_q2     | 0.699    |
+| mse_q3     | 0.697    |
+| param_norm | 127      |
+| samples    | 1.34e+03 |
+| step       | 20       |
+| vb         | 0.0177   |
+| vb_q0      | 0.0503   |
+| vb_q1      | 0.0052   |
+| vb_q2      | 0.00649  |
+| vb_q3      | 0.009    |
+-------------------------
+-------------------------
+| grad_norm  | 1.85     |
+| loss       | 0.531    |
+| loss_q0    | 0.562    |
+| loss_q1    | 0.519    |
+| loss_q2    | 0.521    |
+| loss_q3    | 0.527    |
+| mse        | 0.523    |
+| mse_q0     | 0.546    |
+| mse_q1     | 0.515    |
+| mse_q2     | 0.516    |
+| mse_q3     | 0.52     |
+| param_norm | 127      |
+| samples    | 1.98e+03 |
+| step       | 30       |
+| vb         | 0.0074   |
+| vb_q0      | 0.0154   |
+| vb_q1      | 0.00381  |
+| vb_q2      | 0.0048   |
+| vb_q3      | 0.00672  |
+-------------------------

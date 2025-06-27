@@ -9,7 +9,7 @@ import json
 import multiprocessing
 from PCEM_numpy import process_images
 import sys
-sys.path.append(r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\DiffModels")
+sys.path.append("../DiffModels")
 from guided_diffusion import dist_util, logger
 
 def _list_image_files_recursively(folder):
@@ -90,8 +90,11 @@ class CupDataset(Dataset):
             with open(remove_json, 'r') as f:
                 remove_data = json.load(f)
                 for item in remove_data.get("images_to_remove", []):
-                    user = os.path.normpath(item["path"]).split(os.sep)[-2]
-                    name = os.path.basename(item["path"])
+                    user = os.path.normpath(item["path"]).split("\\")[-2]
+                    name = os.path.normpath(item["path"]).split("\\")[-1]
+                    # user = os.path.normpath(item["path"]).split(os.sep)[-2]
+                    # name = os.path.basename(item["path"])
+                    # print(f"Removing {user}/{name} from dataset")
                     self.to_remove.add((user, name))
 
         self.image_paths, self.label_paths = self._filter_images(image_paths, label_paths)

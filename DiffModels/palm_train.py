@@ -16,10 +16,11 @@ from guided_diffusion.script_util import (
     args_to_dict,
     add_dict_to_argparser,
 )
-from guided_diffusion.train_util import TrainLoop
+from guided_diffusion.train_util_origin import TrainLoop
 
 import sys
-sys.path.append(r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment")
+# sys.path.append(r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment")
+sys.path.append("/home/ubuntu/SDpalm/GenPalm/Diff-Palm/cup_deployment")
 from cup_dataset import load_palm_cup_data
 
 
@@ -90,12 +91,13 @@ def load_palm_cup(raw_dir, label_dir, data_type, batch_size, large_size, include
         data_type,
         batch_size,
         image_size=large_size,
-        remove_json=r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment\remove.json",
+        remove_json=r"/home/ubuntu/SDpalm/GenPalm/Diff-Palm/cup_deployment/remove.json",
         deterministic=False,
         random_crop=False,
         random_flip=True,
         include_key=include_key,
-        save_debug_dir=r"C:\Users\mobil\Desktop\25summer\GenPalm\Diff-Palm\cup_deployment",
+        # save_debug_dir=r"/home/ubuntu/SDpalm/GenPalm/Diff-Palm/cup_deployment",
+        save_debug_dir=None,  # Set to None to disable saving debug images
     )
 
     for large_batch, model_kwargs in data:
